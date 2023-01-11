@@ -37,4 +37,14 @@ class VideoModelTestCase(TestCase):
             state=Video.VideoStateOptions.PUBLISH
         )
         self.assertTrue(published_qs.exists())
+    
+    def test_publish_manager(self):
+        published_qs = Video.objects.all().published()
+        self.assertTrue(published_qs.exists())
+    
+    def test_publish_manager(self):
+        published_qs = Video.objects.all().published()
+        published_qs2 = Video.objects.published()
+        self.assertTrue(published_qs.exists())
+        self.assertEqual(published_qs.count(), published_qs2.count())
 
