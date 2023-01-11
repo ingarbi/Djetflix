@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Video, VideoProxy, VideoAllProxy
+from .models import Video, VideoProxy
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ['title', 'video_id']
@@ -8,10 +8,10 @@ class VideoAdmin(admin.ModelAdmin):
     # list_display = [ 'video_id']
 
     class Meta:
-        model = VideoAllProxy
+        model = Video
 
 
-admin.site.register(VideoAllProxy, VideoAdmin)
+admin.site.register(Video, VideoAdmin)
 
 class VideoProxyAdmin(admin.ModelAdmin):
     list_display = ['title', 'video_id']
