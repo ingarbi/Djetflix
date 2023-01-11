@@ -1,29 +1,34 @@
 from django.contrib import admin
 
-from .models import Video, VideoProxy
+from .models import VideoAllProxy, VideoPublishedProxy
 
-class VideoAdmin(admin.ModelAdmin):
-    list_display = ['title', 'video_id']
+class VideoAllAdmin(admin.ModelAdmin):
+    list_display = ['title', 'video_id', 'is_published']
     search_fields = ['title']
-    # list_display = [ 'video_id']
+    list_filter = ['active']
+    readonly_fields = ['id', 'is_published']
 
     class Meta:
-        model = Video
+        model = VideoAllProxy
+    
+    # def published(self, obj, *args, **kwargs):
+    #     return obj.active
 
 
-admin.site.register(Video, VideoAdmin)
+admin.site.register(VideoAllProxy, VideoAllAdmin)
 
-class VideoProxyAdmin(admin.ModelAdmin):
+
+class VideoPublishedProxyAdmin(admin.ModelAdmin):
     list_display = ['title', 'video_id']
     search_fields = ['title']
-    # list_display = [ 'video_id']
+    # list_filter = ['active']
 
     def get_queryset(self, request):
-        return VideoProxy.objects.filter(active=True)
+        return VideoPublishedProxy.objects.filter(active=True)
 
     class Meta:
-        model = VideoProxy
+        model = VideoPublishedProxy
 
 
-admin.site.register(VideoProxy, VideoProxyAdmin)
+admin.site.register(VideoPublishedProxy, VideoPublishedProxyAdmin)
 
