@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'playlists.apps.PlaylistsConfig',
     'videos.apps.VideosConfig',
 ]
 
