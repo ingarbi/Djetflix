@@ -44,6 +44,9 @@ class Playlist(models.Model):
 
     objects = PlaylistManager()
 
+    def __str__(self):
+        return self.title
+
     @property
     def is_published(self):
         return self.active
@@ -52,6 +55,35 @@ class Playlist(models.Model):
 pre_save.connect(publish_state_pre_save, sender=Playlist)
 
 pre_save.connect(slugify_pre_save, sender=Playlist)
+
+
+class TVShowProxyManager(PlaylistManager):
+    def all (self):
+        return self.get_queryset().filter(parent__isnull=True)
+
+class TVShowProxy(Playlist):
+    objects = TVShowProxyManager()
+
+    
+    class Meta:
+        verbose_name = 'TVShow Proxy'
+        verbose_name = 'TVShow Proxies'
+        proxy = True
+
+
+class TVShowSeasonProxyManager(PlaylistManager):
+    def all (self):
+        return self.get_queryset().filter(parent__isnull=False)
+
+
+class TVShowSeasonProxy(Playlist):
+    objects = TVShowSeasonProxyManager()
+
+    class Meta:
+        verbose_name = 'Season Proxy'
+        verbose_name = 'Seasons Proxies'
+        proxy = True
+
 
 
 class PlaylistItem(models.Model):
