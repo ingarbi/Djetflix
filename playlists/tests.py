@@ -8,12 +8,13 @@ from videos.models import Video
 
 class PlaylistModelTestCase(TestCase):
     def create_videos(self):
-        video_a = Video.objects.create(title='My title', video_id='asdasd')
-        video_b = Video.objects.create(title='My title', video_id='asdasd')
-        video_c = Video.objects.create(title='My title', video_id='asdasd')
+        video_a = Video.objects.create(title='My title', video_id='asdasd1')
+        video_b = Video.objects.create(title='My title', video_id='asdasd2')
+        video_c = Video.objects.create(title='My title', video_id='asdasd3')
         self.video_a = video_a
         self.video_b = video_b
         self.video_c = video_c
+        self.video_qs = Video.objects.all()
 
     def setUp(self):
         self.create_videos()
@@ -25,8 +26,8 @@ class PlaylistModelTestCase(TestCase):
         )
         # obj_b.videos.set([self.video_a, self.video_b, self.video_c])
         # this test now fails anyway bevause id is not unique
-        v_qs = Video.objects.all()
-        obj_b.videos.set(v_qs)
+        
+        obj_b.videos.set(self.video_qs)
         obj_b.save()
         self.obj_b = obj_b
     
@@ -36,6 +37,12 @@ class PlaylistModelTestCase(TestCase):
     def test_playlist_video_items(self):
         count = self.obj_b.videos.all().count()
         self.assertEqual(count, 3)
+    
+    def test_playlist_video_through_modek(self):
+        v_qs = sorted(list(self.video_qs.values_list('id')))
+        video_qs = sorted(list(self.obj_b.videos.all().values_list('id')))
+        playlist_item_qs = sorted(list(self.obj_b.playlistitem_set.all().values_list('video')))
+        self.assertEqual(v_qs, video_qs, playlist_item_qs)
 
     def test_video_playlist_ids_property(self):
         ids = self.obj_a.video.get_playlists_ids()
