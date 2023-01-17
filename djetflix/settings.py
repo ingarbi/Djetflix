@@ -20,9 +20,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'playlists.apps.PlaylistsConfig',
     'videos.apps.VideosConfig',
+    'playlists.apps.PlaylistsConfig',
     'categories.apps.CategoriesConfig',
+    'tags.apps.TagsConfig',
 ]
 
 MIDDLEWARE = [
