@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models.signals import pre_save
 
+from categories.models import Category
 from videos.models import Video
 from djetflix.db.models import PublishStateOptions
 from djetflix.db.receivers import publish_state_pre_save, slugify_pre_save
@@ -36,7 +37,7 @@ class Playlist(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
     order = models.IntegerField(default=1)
     title = models.CharField(max_length=220)
-    
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name="playlists") 
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
     type = models.CharField(max_length=3, choices=PlaylistTypeChoices.choices, default=PlaylistTypeChoices.PLAYLIST)

@@ -46,7 +46,10 @@ class Video(models.Model):
     
     def get_playlists_ids(self):
         return list(self.featured_playlist.all().values_list('id', flat=True))
-
+    
+    def __str__(self):
+        return self.title
+    
 
 class VideoAllProxy(Video):
     class Meta:
