@@ -2,10 +2,12 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models.signals import pre_save
+from django.db.models import Avg, Max, Min
 from django.contrib.contenttypes.fields import GenericRelation
 
 from videos.models import Video
 from categories.models import Category
+from ratings.models import Rating
 from tags.models import TaggedItem
 from djetflix.db.models import PublishStateOptions
 from djetflix.db.receivers import publish_state_pre_save, slugify_pre_save
@@ -53,11 +55,18 @@ class Playlist(models.Model):
     state = models.CharField(max_length=2, choices=PublishStateOptions.choices, default=PublishStateOptions.DRAFT)
     publish_timestamp = models.DateField(auto_now=False, auto_now_add=False, blank=True, null=True)
     tags = GenericRelation(TaggedItem, related_query_name='playlist')
+    ratings = GenericRelation(Rating, related_query_name='playlist')
 
     objects = PlaylistManager()
 
     def __str__(self):
         return self.title
+
+    def get_avg_rating(self):
+        return Playlist.objects.filter(id=self.id).aggregate(Avg("ratings_value"))
+
+    def get_avg_spread(self):
+        return Playlist.objects.filter(id=self.id).aggregate(max=Max("ratings_value"), min=Min("ratings_value"))
 
     @property
     def is_published(self):
