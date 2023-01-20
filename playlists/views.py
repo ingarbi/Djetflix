@@ -1,7 +1,7 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.http import Http404
 
-
-from .models import Playlist, MovieProxy, TVShowProxy
+from .models import Playlist, MovieProxy, TVShowProxy, TVShowSeasonProxy
 
 
 class PlaylistMixin():
@@ -20,9 +20,38 @@ class MovieListView(PlaylistMixin, ListView):
     queryset = MovieProxy.objects.all()
     title = "Movies"
 
+
+class MovieDetailView(PlaylistMixin, DetailView):
+    template_name = 'playlist/playlist_detail.html'
+    queryset = MovieProxy.objects.all()
+
+
+class PlaylistDetailView(PlaylistMixin, DetailView):
+    template_name = 'playlist/movie_detail.html'
+    queryset = Playlist.objects.all()
+
+class TVShowDetailView(PlaylistMixin, DetailView):
+    template_name = 'playlists/tvshow_detail.html'
+    queryset = TVShowProxy.objects.all()
+
+class TVShowSeasonDetailView(PlaylistMixin, DetailView):
+    template_name = 'playlists/season_detail.html'
+    queryset = TVShowSeasonProxy.objects.all()
+
+    def get_object(self):
+        kwargs = self.kwargs
+        show_slug = kwargs.get("showSlug")
+        season_slug = kwargs.get("seasonSlug")
+        qs = self.get_queryset().filter(parent__slug__iexact=show_slug, slug__iexact=season_slug)
+        if not qs.count() == 1:
+            raise Http404
+        return qs.first()
+
+
 class TVShowListView(PlaylistMixin, ListView):
     queryset = TVShowProxy.objects.all()
     title = "TV Shows"
+
 
 class FeaturedPlaylistListView(PlaylistMixin, ListView):
     queryset = Playlist.objects.featured_playlists()
