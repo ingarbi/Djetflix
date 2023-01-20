@@ -14,6 +14,7 @@
 
 {{ object.slug }} {{ object.get_short_display }}
 
+{% include 'videos/embed.html' with video_id=object.get_video_id %}
 
 {% for season in object.seasons %}
 
