@@ -10,7 +10,7 @@ from categories.models import Category
 from ratings.models import Rating
 from tags.models import TaggedItem
 from djetflix.db.models import PublishStateOptions
-from djetflix.db.receivers import publish_state_pre_save, slugify_pre_save
+from djetflix.db.receivers import publish_state_pre_save, unique_slugify_pre_save, slugify_pre_save
 
 
 class PlaylistQuerySet(models.QuerySet):
@@ -60,6 +60,9 @@ class Playlist(models.Model):
     ratings = GenericRelation(Rating, related_query_name='playlist')
 
     objects = PlaylistManager()
+
+    # class Meta:
+    #     unique_together = (('title', 'slug'))
 
     def __str__(self):
         return self.title
@@ -155,13 +158,17 @@ class PlaylistItem(models.Model):
 
 
 pre_save.connect(publish_state_pre_save, sender=TVShowProxy)
-pre_save.connect(slugify_pre_save, sender=TVShowProxy)
+# pre_save.connect(slugify_pre_save, sender=TVShowProxy)
+pre_save.connect(unique_slugify_pre_save, sender=TVShowProxy)
 
 pre_save.connect(publish_state_pre_save, sender=TVShowSeasonProxy)
-pre_save.connect(slugify_pre_save, sender=TVShowSeasonProxy)
+# pre_save.connect(slugify_pre_save, sender=TVShowSeasonProxy)
+pre_save.connect(unique_slugify_pre_save, sender=TVShowSeasonProxy)
 
 pre_save.connect(publish_state_pre_save, sender=MovieProxy)
-pre_save.connect(slugify_pre_save, sender=MovieProxy)
+# pre_save.connect(slugify_pre_save, sender=MovieProxy)
+pre_save.connect(unique_slugify_pre_save, sender=MovieProxy)
 
 pre_save.connect(publish_state_pre_save, sender=Playlist)
-pre_save.connect(slugify_pre_save, sender=Playlist)
+# pre_save.connect(slugify_pre_save, sender=Playlist)
+pre_save.connect(unique_slugify_pre_save, sender=Playlist)
