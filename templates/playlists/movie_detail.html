@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load rating %}
 {% block head_title %}
     {{ object.title }} /
     {{ block.super }}
@@ -12,6 +12,13 @@
     
 
     <h1>{{ object.title }}</h1>
+
+
+
+    <div>
+        {% rating object=object %}
+    </div>
+
 
 {{ object.title }} {{ object.get_short_display }}
 
