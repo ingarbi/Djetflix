@@ -2,20 +2,9 @@ from django.views.generic import ListView, DetailView
 from django.http import Http404
 from django.utils import timezone
 
+from .mixins import PlaylistMixin
 from djetflix.db.models import PublishStateOptions
 from .models import Playlist, MovieProxy, TVShowProxy, TVShowSeasonProxy
-
-
-class PlaylistMixin():
-    template_name = 'playlist_list.html'
-    title = None
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data( *args, **kwargs)
-        if self.title is not None:
-            context['title'] = self.title
-        return context
-    def get_queryset(self):
-        return super().get_queryset().published()
 
 
 class MovieListView(PlaylistMixin, ListView):
@@ -24,12 +13,12 @@ class MovieListView(PlaylistMixin, ListView):
 
 
 class MovieDetailView(PlaylistMixin, DetailView):
-    template_name = 'playlist/playlist_detail.html'
+    template_name = 'playlists/playlist_detail.html'
     queryset = MovieProxy.objects.all()
 
 
 class PlaylistDetailView(PlaylistMixin, DetailView):
-    template_name = 'playlist/movie_detail.html'
+    template_name = 'playlists/movie_detail.html'
     queryset = Playlist.objects.all()
 
 class TVShowDetailView(PlaylistMixin, DetailView):
@@ -76,5 +65,6 @@ class TVShowListView(PlaylistMixin, ListView):
 
 
 class FeaturedPlaylistListView(PlaylistMixin, ListView):
+    template_name = 'playlists/featured_list.html'
     queryset = Playlist.objects.featured_playlists()
     title = "Featured"
