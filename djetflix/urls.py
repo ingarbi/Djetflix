@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from ratings.views import rate_object_view
 from playlists.views import (
     MovieListView, 
     MovieDetailView,
@@ -50,4 +50,5 @@ urlpatterns = [
     path('shows/<slug:slug>/', TVShowDetailView.as_view()),
     path('shows/', TVShowListView.as_view()),
     path('tags/', include('tags.urls')),
+    path('object-rate/', rate_object_view)
 ]
