@@ -27,6 +27,17 @@ class PlaylistQuerySet(models.QuerySet):
             Q(type=Playlist.PlaylistTypeChoices.SHOW)
 
         )
+    
+    def search(self, query=None):
+        if query is None:
+            return self.none()
+        return self.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) | 
+            Q(category__title__icontains=query) |
+            Q(category__slug__icontains=query) |
+            Q(tags__tag__icontains=query)
+        ).distinct()
 
 class PlaylistManager(models.Manager):
     def get_queryset(self):
